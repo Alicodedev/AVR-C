@@ -17,14 +17,16 @@ void setup() {
 
 void loop() {
 
-  if (!digitalRead(buttonpin) == HIGH) {// if button closed detected *negates high voltage from PULLUP register 
-    digitalWrite(LED1, HIGH);
-    digitalWrite(LED2, LOW);
-    
-    swap(&LED1,&LED2);// call swap function
-    Serial.println("Button pressed!");
-    
-  }
+    delay(50);// button debounce  
+    if (!digitalRead(buttonpin) == HIGH) {// if button closed detected *negates high voltage from PULLUP register 
+        digitalWrite(LED1, HIGH);
+        digitalWrite(LED2, LOW);
+
+        swap(&LED1,&LED2);// call swap function
+        Serial.println("Button pressed!");
+        
+    }
+    delay(50);// button debounce
 }
 
 void swap(int* a, int* b)// function declaration 
