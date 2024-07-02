@@ -1,14 +1,11 @@
 
 #include <ArduinoJson.h>
-//#include <ArduinoJson.hpp>
+#include<SoftwareSerial.h>
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-const int led = 12; // Define the LED pin
-const int digitalPin = D7; // KY-028 digital interface (D3 on NodeMCU)
-const int analogPin = A0; // KY-028 analog interface (A0 on NodeMCU)
-int digitalVal; // Digital readings
-int analogVal; // Analog readings
+SoftwareSerial mySerial (13,15);
+
 
 
 
@@ -69,7 +66,8 @@ void setup() {
   pinMode(led,OUTPUT);
   pinMode(digitalPin,INPUT);
   delay(100);
-  Serial.begin(9600);
+  Serial.begin(115200);
+  mySerial.begin(9600);
   setup_wifi();
   //client.setCallback(callback);
 }
@@ -90,22 +88,10 @@ void loop() {
 
     lastMsg = now;
 
-
-    digitalVal = digitalRead(digitalPin);
-    if (digitalVal == HIGH) // If temperature threshold reached
-    {
-      digitalWrite(led, HIGH); // Turn ON the LED
-    }
-
-    else
-    {
-      digitalWrite(led, LOW); // Turn OFF the LED
-    }
-
-  // Read the analog interface
-    analogVal = analogRead(analogPin);
-    doc["t"] = analogVal;
-    Serial.println(analogVal); // Print analog value to seria
+    // Read the sensor Rx-Tx interface of the microcontroller 
+    String msg =  mySerial.readStringUntil('\r');
+    doc["t"] = msg;
+    Serial.println(msg); // Print rx-tx value
     delay(100);
   
     serializeJson(doc, output);
